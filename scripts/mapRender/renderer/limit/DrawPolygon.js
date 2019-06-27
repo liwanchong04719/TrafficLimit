@@ -25,6 +25,19 @@ FM.mapApi.render.renderer.DrawPolygon = FM.mapApi.render.Renderer.extend({
             color: 'red',
             opacity: 0.5
         };
+        if (this._feature.properties.groupId === App.Temp.groupId) {
+            symbolData.outLine = {
+                type: 'MarkerLineSymbol',
+                marker: {
+                    type: 'TiltedCrossMarkerSymbol',
+                    size: 6,
+                    color: 'blue',
+                    width: 1,
+                    opacity: 1
+                },
+                pattern: [10, 10]
+            };
+        }
         var symbol = this._symbolFactory.createSymbol(symbolData);
         symbol.geometry = this._geometryFactory.fromGeojson(this._feature.geometry);
         return symbol;

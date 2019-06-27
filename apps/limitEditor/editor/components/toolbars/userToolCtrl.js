@@ -8,7 +8,7 @@ angular.module('app').controller('userToolCtrl', ['$rootScope', '$scope', '$ocLa
         $scope.menuList = []; // 控制菜单是否可用
 
         var initMenuList = function () {
-            $scope.menuList = ['policyTable', 'resultList', 'submit', 'infoPanel', 'limit', 'log', 'intersectList', 'temporaryList'];
+            $scope.menuList = ['policyTable', 'resultList', 'submit', 'infoPanel', 'limit', 'log', 'intersectList', 'temporaryList', 'dealfailureList', 'datadifference'];
         };
         $scope.backToInfo = function (flag) {
             if (flag) {
@@ -65,6 +65,7 @@ angular.module('app').controller('userToolCtrl', ['$rootScope', '$scope', '$ocLa
                 }
             });
         };
+
         // 提交几何
         $scope.submitGeometry = function (flag) {
             if (flag) {
@@ -144,7 +145,26 @@ angular.module('app').controller('userToolCtrl', ['$rootScope', '$scope', '$ocLa
                 type: 'temporaryPanel'
             });
         };
+        // 重复批赋失败的数据
+        $scope.showdealfailureResultListPanel = function (flag) {
+            if (flag) {
+                return;
+            }
 
+            $scope.$emit('ShowInfoPage', {
+                type: 'dealfailureList'
+            });
+        };
+        // 数据差分数据列表
+        $scope.showdatadifferenceResultListPanel = function (flag){
+            if (flag) {
+                return;
+            }
+
+            $scope.$emit('ShowInfoPage', {
+                type: 'datadifference'
+            });
+        }
         var initUserTool = function () {
             initMenuList();
         };

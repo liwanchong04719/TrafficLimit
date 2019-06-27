@@ -550,7 +550,11 @@ angular.module('app').controller('editorCtrl', ['$scope', '$rootScope', '$cookie
                 case 'spareLine':
                 case 'trackLinePanel':
                 case 'intersectLineList':
+                case 'dealfailureList':
                     showInLeftFloatPanel(data);
+                    break;
+                case 'datadifference':
+                    showInDialog(data);
                     break;
                 case 'RestrictionTopoPanel':
                     showInRightFloatPanel(data);
@@ -759,8 +763,10 @@ angular.module('app').controller('editorCtrl', ['$scope', '$rootScope', '$cookie
             $scope.$broadcast('Map-HighlightObject', {
                 features: [objectEditCtrl.data]
             });
+            if (data.groupId == App.Temp.groupId) {
+                showEditTool(geoLiveType);
+            }
 
-            showEditTool(geoLiveType);
             // add by chenx on 2017-3-22
             // 显示地图顶部的操作按钮条，替代原来的鼠标周边半圆形工具条
             // 月编深度深度信息作业时不显示编辑工具
@@ -1426,7 +1432,13 @@ angular.module('app').controller('editorCtrl', ['$scope', '$rootScope', '$cookie
                 features: [data.feature]
             });
         });
-
+        // 追踪地图高亮
+        $scope.$on('trackLink-HighlightObject', function (event, data) {
+            // 高亮追踪线
+            $scope.$broadcast('Map-HighlightObject', {
+                features: [data]
+            });
+        });
         // 显示或隐藏左侧面板
         $scope.$on('LeftListPanel', function (event, data) {
             $scope.leftListPanelFlag = data;
@@ -1685,6 +1697,17 @@ angular.module('app').controller('editorCtrl', ['$scope', '$rootScope', '$cookie
         $scope.$on('RefreshIntersectLineList', function (event, data) {
             $scope.$broadcast('refresh-intersectLine');
         });
+
+        // 刷新临时成果列表
+        $scope.$on(eventCtrl.eventTypes.REFRESHTEMPORARYLIST, function (event, data) {
+            $scope.$broadcast('refresh-temporaryResultList');
+        });
+
+        // 刷新未批处理成功列表
+        $scope.$on(eventCtrl.eventTypes.REFRESHDEALFAILURELIST, function (event, data) {
+            $scope.$broadcast('refresh-dealFailureList');
+        });
+
         /* start 事件监听*******************************************************************/
         eventCtrl.on(eventCtrl.eventTypes.OBJECTSELECTED, function (data) {
             $scope.$broadcast('Map-ClearMap');

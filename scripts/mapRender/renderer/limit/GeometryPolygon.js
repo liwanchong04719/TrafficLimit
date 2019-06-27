@@ -25,15 +25,38 @@ FM.mapApi.render.renderer.GeometryPolygon = FM.mapApi.render.Renderer.extend({
             color: 'pink',
             opacity: 0.5,
             outLine: {
-                type: 'SimpleLineSymbol',
-                color: 'pink',
-                width: 3,
-                style: 'solid'
+                type: 'CompositeLineSymbol',
+                symbols: [
+                    {
+                        type: 'SimpleLineSymbol',
+                        color: 'pink',
+                        width: 3,
+                        style: 'solid'
+                    }
+                ]
             }
         };
         if (this._feature.properties.boundaryLink === '2') {
-            symbolData.outLine.type = 'CartoLineSymbol';
-            symbolData.outLine.pattern = [10, 10];
+            symbolData.outLine.symbols[0] = {
+                type: 'CartoLineSymbol',
+                pattern: [10, 10],
+                color: 'pink',
+                width: 3,
+                style: 'solid'
+            };
+        }
+        if (this._feature.properties.groupId === App.Temp.groupId) {
+            symbolData.outLine.symbols.push({
+                type: 'MarkerLineSymbol',
+                marker: {
+                    type: 'TiltedCrossMarkerSymbol',
+                    size: 6,
+                    color: 'blue',
+                    width: 1,
+                    opacity: 1
+                },
+                pattern: [10, 10]
+            });
         }
         var symbol = this._symbolFactory.createSymbol(symbolData);
         symbol.geometry = this._geometryFactory.fromGeojson(this._feature.geometry);

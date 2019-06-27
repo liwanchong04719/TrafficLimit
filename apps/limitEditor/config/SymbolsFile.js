@@ -661,7 +661,7 @@ App.Config.symbols = [
     }, {
         name: 'ls_link_selected', // 通用link选中样式，用于闪烁高亮
         type: 'SimpleLineSymbol',
-        color: 'blue',
+        color: '#26FDFB',
         width: 3,
         shadowColor: 'blue',
         shadowBlur: 10

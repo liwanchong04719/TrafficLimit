@@ -135,7 +135,7 @@ fastmap.uikit.topoEdit.CopyToPolygonTopoEditor = fastmap.uikit.topoEdit.TopoEdit
     getCopyResult: function (options) {
         var editResult = new fastmap.uikit.complexEdit.CopyResult();
         editResult.geoLiveType = 'COPYTOPOLYGON';
-        editResult.types = ['RDLINK', 'ADLINK'];
+        editResult.types = ['RDLINK', 'ADLINK', 'LCLINK'];
         return editResult;
     },
 
@@ -147,11 +147,14 @@ fastmap.uikit.topoEdit.CopyToPolygonTopoEditor = fastmap.uikit.topoEdit.TopoEdit
     copy: function (editResult) {
         var rdLinks = [];
         var adLinks = [];
+        var lcLinks = [];
         for (var i = 0; i < editResult.links.length; i++) {
             if (editResult.links[i].properties.geoLiveType === 'RDLINK') {
                 rdLinks.push(editResult.links[i].properties.id);
-            } else {
+            } else if (editResult.links[i].properties.geoLiveType === 'ADLINK') {
                 adLinks.push(editResult.links[i].properties.id);
+            } else if (editResult.links[i].properties.geoLiveType === 'LCLINK') {
+                lcLinks.push(editResult.links[i].properties.id);
             }
         }
         var params = {
@@ -167,6 +170,9 @@ fastmap.uikit.topoEdit.CopyToPolygonTopoEditor = fastmap.uikit.topoEdit.TopoEdit
         }
         if (adLinks.length > 0) {
             params.data.adlinks = adLinks;
+        }
+        if (lcLinks.length > 0) {
+            params.data.lclinks = lcLinks;
         }
         return this.dataServiceFcc.copyToLine(params);
     },

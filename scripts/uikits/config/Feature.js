@@ -899,7 +899,7 @@ FM.uikit.Config.Feature = (function () {
                         tmpl: 'components/limit/tpls/geometryLineTpl.html'
                     }
                 },
-                editTools: ['DELETELIMIT'] // 地图操作工具列表
+                editTools: ['MODIFY', 'DELETELIMIT', 'BREAKEDITLINE'] // 地图操作工具列表
             },
             GEOMETRYPOLYGON: {
                 name: '成果面',

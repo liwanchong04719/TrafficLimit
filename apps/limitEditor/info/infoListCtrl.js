@@ -20,6 +20,10 @@ angular.module('app').controller('infoListCtrl', ['$window', '$scope', '$timeout
         $scope.childListFlag = true; // 当前作业项折叠flag;
         $scope.showFlag = true;
         $scope.selectId = true;
+        $scope.regionObj = {
+            provinceName: null,
+            cityId: null
+        };
         /**
          * 显示作业项子内容
          * @method openChildList
@@ -91,7 +95,7 @@ angular.module('app').controller('infoListCtrl', ['$window', '$scope', '$timeout
             var params = {
                 type: 'SCPLATERESINFO',
                 condition: {
-                    adminArea: $scope.cityId,
+                    adminArea: $scope.regionObj.cityId,
                     infoCode: $scope.searchModel.infoId,
                     pageSize: $scope.searchModel.pageSize,
                     pageNum: $scope.searchModel.pageNum,
@@ -143,7 +147,7 @@ angular.module('app').controller('infoListCtrl', ['$window', '$scope', '$timeout
                         var temp = data.data[i];
                         temp.pageIndex = i + 1;
                         for (var j = 0; j < $scope.cityList.length; j++) {
-                            if ($scope.cityId == $scope.cityList[j].id) {
+                            if ($scope.regionObj.cityId == $scope.cityList[j].id) {
                                 temp.cityName = $scope.cityList[j].name;
                             }
                         }
@@ -165,7 +169,7 @@ angular.module('app').controller('infoListCtrl', ['$window', '$scope', '$timeout
          */
         $scope.changeCityId = function (value) {
             if (value) {
-                $scope.cityId = value;
+                $scope.regionObj.cityId = value;
             }
         };
         /**
@@ -177,11 +181,11 @@ angular.module('app').controller('infoListCtrl', ['$window', '$scope', '$timeout
          * @return {undefined}
          */
         $scope.changeProvince = function (value) {
-            $scope.provinceName = value;
+            $scope.regionObj.provinceName = value;
             for (var i = 0; i < CityList.length; i++) {
-                if (CityList[i].province === $scope.provinceName) {
+                if (CityList[i].province === $scope.regionObj.provinceName) {
                     $scope.cityList = CityList[i].city;
-                    $scope.cityId = CityList[i].city[0].id;
+                    $scope.regionObj.cityId = CityList[i].city[0].id;
                 }
             }
         };
@@ -206,7 +210,7 @@ angular.module('app').controller('infoListCtrl', ['$window', '$scope', '$timeout
         $scope.searchGroupList = function (row) {
             App.Temp.infoToGroupData = {
                 infoId: row.entity.infoIntelId,
-                cityId: $scope.cityId,
+                cityId: $scope.regionObj.cityId,
                 cityName: row.entity.cityName,
                 condition: row.entity.condition
             };
@@ -235,7 +239,7 @@ angular.module('app').controller('infoListCtrl', ['$window', '$scope', '$timeout
          * @return {object} html 包含来源网址，显示在页面
          */
         function getUrl() {
-            var html = '<div class="ui-grid-cell-contents"><a href="{{row.entity.url}}" target="_blank">{{row.entity.url}}</a></div>';
+            var html = '<div class="ui-grid-cell-contents" ng-repeat="item in row.entity.url.split(\';\') track by $index"><a href="{{item}}" target="_blank">{{item}}</a></div>';
             return html;
         }
         /**
@@ -316,12 +320,12 @@ angular.module('app').controller('infoListCtrl', ['$window', '$scope', '$timeout
          */
         var initialize = function () {
             $scope.provinceList = [];
-            $scope.provinceName = '北京市';
+            $scope.regionObj.provinceName = '北京市';
             for (var i = 0; i < CityList.length; i++) {
                 $scope.provinceList.push(CityList[i].province);
-                if (CityList[i].province === $scope.provinceName) {
+                if (CityList[i].province === $scope.regionObj.provinceName) {
                     $scope.cityList = CityList[i].city;
-                    $scope.cityId = CityList[i].city[0].id;
+                    $scope.regionObj.cityId = CityList[i].city[0].id;
                 }
             }
             var date = new Date();

@@ -1131,6 +1131,78 @@ angular.module('dataService').service('dsEdit', ['$http', '$q', 'ajax', 'dsOutpu
         });
         return defer.promise;
     };
+    // 未批处理成功的geometry列表
+    this.getdealfailureResultList = function () {
+        var params = {
+            type: 'SCPLATERESGEOMETRY',
+            condition: {
+                groupId: App.Temp.groupId,
+                type: 'NoLink'
+            }
+        };
+        var defer = $q.defer();
+        ajax.post('limit/getMetaDataByCondition', {
+            parameter: JSON.stringify(params)
+        }).success(function (data) {
+            if (data.errcode == 0) {
+                defer.resolve(data.data);
+            } else {
+                swal('搜索信息出错：', data.errmsg, 'error');
+                defer.resolve(-1);
+            }
+        }).error(function (rejection) {
+            defer.reject(rejection);
+        });
+        return defer.promise;
+    };
+    // 数据差分列表
+    this.getdataDifferenceResultList = function () {
+        var params = {
+            condition: {
+                dbId: App.Temp.dbId,
+                groupId: App.Temp.groupId
+            }
+        };
+        var defer = $q.defer();
+        ajax.post('limit/diff', {
+            parameter: JSON.stringify(params)
+        }).success(function (data) {
+            if (data.errcode == 0) {
+                defer.resolve(data.data);
+            } else {
+                swal('搜索信息出错：', data.errmsg, 'error');
+                defer.resolve(-1);
+            }
+        }).error(function (rejection) {
+            defer.reject(rejection);
+        });
+        return defer.promise;
+    };
+    // 查询元数据rdlink表
+    this.getMetaDataByCondition = function (linkPid, geometryId) {
+        var params = {
+            type: 'SCPLATERESRDLINK',
+            condition: {
+                geoId: geometryId,
+                linkPid: linkPid,
+                isInter: false
+            }
+        };
+        var defer = $q.defer();
+        ajax.post('limit/getMetaDataByCondition', {
+            parameter: JSON.stringify(params)
+        }).success(function (data) {
+            if (data.errcode == 0) {
+                defer.resolve(data.data);
+            } else {
+                swal('搜索信息出错：', data.errmsg, 'error');
+                defer.resolve(-1);
+            }
+        }).error(function (rejection) {
+            defer.reject(rejection);
+        });
+        return defer.promise;
+    };
     // 查询主表节点信息
     this.getAllTableInfos = function () {
         var param = { searchType: 'PARENT_TABLE_LABLE' };

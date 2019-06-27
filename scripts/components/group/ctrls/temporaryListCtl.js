@@ -165,12 +165,10 @@ angular.module('app').controller('temporaryListCtl', ['$window', '$scope', '$tim
             };
             getData();
         };
-        $scope.$on('Refresh-Result-List', function (event, data) {
+        $scope.$on('ReloadData', initialize);
+        $scope.$on('refresh-temporaryResultList', function () {
             getData();
         });
-
-        $scope.$on('ReloadData', initialize);
-
         $scope.$on('$destroy', function () {
             clearFeedback();
             feedbackCtrl.del(feedback);

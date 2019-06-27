@@ -123,6 +123,7 @@ fastmap.uikit.editControl.EditControlFactory = L.Class.extend({
             case 'COPYTOPOLYGON':
             case 'DRAWPOLYGON':
             case 'GEOMETRYPOLYGON':
+            case 'GEOMETRYLINE':
             case 'RDNODE':
             case 'RDLINK':
             case 'IXPOI':
@@ -242,6 +243,8 @@ fastmap.uikit.editControl.EditControlFactory = L.Class.extend({
     breakEditLineControl: function (map, options) {
         switch (options.originObject.geoLiveType) {
             case 'COPYTOPOLYGON':
+            case 'COPYTOLINE':
+            case 'GEOMETRYLINE':
                 return new fastmap.uikit.editControl.BreakEditLineControl(map, options);
             default:
                 return null;

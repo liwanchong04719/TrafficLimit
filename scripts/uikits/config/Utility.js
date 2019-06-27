@@ -286,6 +286,20 @@ FM.uikit.Config.Utility = (function () {
                     tmpl: 'components/group/tpls/temporaryListTpl.html'
                 }
             },
+            dealfailureList: {
+                name: '批赋处理失败列表',
+                template: {
+                    ctrl: 'components/group/ctrls/dealFailurelListCtl.js',
+                    tmpl: 'components/group/tpls/dealFailureListTpl.html'
+                }
+            },
+            datadifference: {
+                name: '数据差分列表',
+                template: {
+                    ctrl: 'components/group/ctrls/dataDifferenceCtl.js',
+                    tmpl: 'components/group/tpls/dataDifferenceTpl.html'
+                }
+            },
             batchEditLimit: {
                 name: '批量编辑列表',
                 template: {

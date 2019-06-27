@@ -17,7 +17,7 @@ App.Config.map.Scenes = {
             type: 'feature',
             label: 'roadFeature',
             name: '基础信息场景',
-            layers: ['RdLink', 'RdNode', 'AdLink', 'RwLink', 'CopyToLine', 'CopyToPolygon', 'DrawPolygon', 'GeometryLine', 'GeometryPolygon', 'LimitLine']
+            layers: ['RdLink', 'RdNode', 'AdLink', 'RwLink', 'CopyToLine', 'CopyToPolygon', 'DrawPolygon', 'GeometryLine', 'GeometryPolygon']
         }
     }
 };

@@ -14,6 +14,16 @@
 angular.module('app').controller('batchDeleteLimitCtrl', ['$window', '$scope', '$timeout', 'NgTableParams', 'dsFcc', 'appPath', '$ocLazyLoad',
     function ($window, $scope, $timeout, NgTableParams, dsFcc, appPath, $ocLazyLoad) {
         var eventCtrl = new fastmap.uikit.EventController();
+        var feedbackCtrl = fastmap.mapApi.FeedbackController.getInstance();
+        var symbolFactory = fastmap.mapApi.symbol.GetSymbolFactory();
+        var linkSymbol = symbolFactory.getSymbol('ls_link_selected');
+        var faceSymbol = symbolFactory.getSymbol('pt_face');
+        var feedback = new fastmap.mapApi.Feedback();
+        feedbackCtrl.add(feedback);
+        var clearFeedback = function () {
+            feedback.clear();
+            feedbackCtrl.refresh();
+        };
         /**
          * 初始化数据
          * @author Niuxinyi
@@ -23,7 +33,24 @@ angular.module('app').controller('batchDeleteLimitCtrl', ['$window', '$scope', '
          * @return {undefined}
          */
         var initialize = function (event, data) {
-            $scope.limitData = data.data;
+            var limitData = data.data;
+            for (var i = 0; i < limitData.length; i++) {
+                limitData[i].checked = true;
+            }
+            $scope.limitData = limitData;
+        };
+        /**
+         * 定位高亮数据
+         * @param {object} row  数据对象
+         * @return {undefined}
+         */
+        $scope.location = function (row) {
+            $scope.$emit('LocateObject', { feature: row.geometry });  //  定位
+
+            var symbol = row.geometry.type === 'LineString' ? linkSymbol : faceSymbol;
+            feedback.clear();
+            feedback.add(row.geometry, symbol);
+            feedbackCtrl.refresh();
         };
         /**
          * 删除操作
@@ -39,7 +66,13 @@ angular.module('app').controller('batchDeleteLimitCtrl', ['$window', '$scope', '
                 command: 'DELETE'
             };
             for (var i = 0; i < limitData.length; i++) {
-                ids.push(limitData[i].properties.id);
+                if (limitData[i].checked) {
+                    ids.push(limitData[i].properties.id);
+                }
+            }
+            if (ids.length == 0) {
+                swal('提示', '请选择要删除的数据', 'warning');
+                return;
             }
             switch (limitData[0].properties.geoLiveType) {
                 case 'COPYTOLINE':
@@ -70,7 +103,8 @@ angular.module('app').controller('batchDeleteLimitCtrl', ['$window', '$scope', '
         };
         var unbindHandler = $scope.$on('ReloadData-batchDeleteLimit', initialize);
         $scope.$on('$destroy', function (event, data) {
-
+            clearFeedback();
+            feedbackCtrl.del(feedback);
         });
     }
 ]);

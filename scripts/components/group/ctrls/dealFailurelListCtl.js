@@ -1,7 +1,7 @@
 /**
- * 相交列表
+ * 几何成果列表
  * @author zhaohang
- * @date   2017/11/16
+ * @date   2017/10/12
  * @param  {object} $window 窗口
  * @param  {object} $scope 作用域
  * @param  {object} $timeout 定时
@@ -11,19 +11,15 @@
  * @param  {object} dsEdit 编辑
  * @return {undefined}
  */
-angular.module('app').controller('intersectLineListCtl', ['$window', '$scope', '$timeout', 'NgTableParams', 'dsFcc', 'appPath', 'dsEdit',
+angular.module('app').controller('dealfailurelListCtl', ['$window', '$scope', '$timeout', 'NgTableParams', 'dsFcc', 'appPath', 'dsEdit',
     function ($window, $scope, $timeout, NgTableParams, dsFcc, appPath, dsEdit) {
         var feedbackCtrl = fastmap.mapApi.FeedbackController.getInstance();
         var symbolFactory = fastmap.mapApi.symbol.GetSymbolFactory();
         var linkSymbol = symbolFactory.getSymbol('ls_link_selected');
+        var faceSymbol = symbolFactory.getSymbol('pt_face');
 
         var feedback = new fastmap.mapApi.Feedback();
         feedbackCtrl.add(feedback);
-
-        var clearFeedback = function () {
-            feedback.clear();
-            feedbackCtrl.refresh();
-        };
 
         var myRowProc = function (rows, columns) {
             if (rows.length > 0) {
@@ -38,19 +34,27 @@ angular.module('app').controller('intersectLineListCtl', ['$window', '$scope', '
             return rows;
         };
 
-        // 定位并高亮显示要素
+        var clearFeedback = function () {
+            feedback.clear();
+            feedbackCtrl.refresh();
+        };
+        /**
+         * 定位并高亮显示要素
+         * @author Niuxinyi
+         * @date   2017-11-20
+         * @param  {object} row 包括获取的数据的行
+         * @return {undefined}
+         */
         $scope.showOnMap = function (row) {
             if (!row.isSelected) {
                 return;
             }
 
-            $scope.$emit('LocateObject', { feature: {
-                geometry: row.entity.geometryRdlink
-            } });  //  定位
+            $scope.$emit('LocateObject', { feature: row.entity });  //  定位
 
-            var symbol = linkSymbol;
+            var symbol = row.entity.geometry.type === 'LineString' ? linkSymbol : faceSymbol;
             feedback.clear();
-            feedback.add(row.entity.geometryRdlink, symbol);
+            feedback.add(row.entity.geometry, symbol);
             feedbackCtrl.refresh();
         };
         /**
@@ -61,9 +65,9 @@ angular.module('app').controller('intersectLineListCtl', ['$window', '$scope', '
          */
         function formatRow() {
             var html = '<div ng-click="grid.appScope.showOnMap(row)">' +
-              '<div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" ' +
-              'class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }"  ui-grid-cell></div>' +
-              '</div>';
+                '<div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by colRenderIndex" ' +
+                'class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }"  ui-grid-cell></div>' +
+                '</div>';
             return html;
         }
 
@@ -71,62 +75,58 @@ angular.module('app').controller('intersectLineListCtl', ['$window', '$scope', '
          * 显示序号
          * @author Niuxinyi
          * @date   2017-11-20
-         * @return {object} html 返回页面
+         * @return {object} html  返回页面
          */
         function getIndex() {
-            var html = '<div class="ui-grid-cell-contents">{{row.entity.pageIndex}}</div>';
+            var html = '<div class="ui-grid-cell-contents">{{ row.entity.index}}</div>';
             return html;
         }
 
         /**
-         * 边界是否限行
-         * @author Niuxinyi
-         * @date   2017-11-20
-         * @return {object} html 返回页面
+         * 获取几何类型
+         * @returns {object} html  返回页面
          */
-        function getBoundaryLike() {
-            var html = '<div class="ui-grid-cell-contents">{{row.entity.linkDir === 0 ? "未限制" : row.entity.linkDir === 1 ? "双方向限行" : row.entity.linkDir === 2 ? "顺方向限行" : "逆方向限行"}}</div>';
+        function getGeoLiveType() {
+            var html = '<div class="ui-grid-cell-contents">{{row.entity.geometry.type === "Polygon" ? "面" : "线"}}</div>';
             return html;
         }
 
+        /**
+         * 显示几何Id
+         * @return {object} html  返回页面
+         */
+        function getGeometryId() {
+            var html = '<div class="ui-grid-cell-contents">{{row.entity.geometryId}}</div>';
+            return html;
+        }
         /**
          * 获取表格数据;
-         * @author Niuxinyi
-         * @date   2017-11-20
          * @return {undefined}
          */
         function getData() {
-            clearFeedback();
-            var params = {
-                type: 'SCPLATERESRDLINK',
-                condition: {
-                    groupId: $scope.groupID,
-                    isInter: true
-                }
-            };
             $scope.loadingFlag = true;
-            dsFcc.getIntersectLineListData(params).then(function (data) {
-                var ret = [];
-                var total = 0;
-
+            dsEdit.getdealfailureResultList().then(function (data) {
+                var dealfailureData = [];
                 if (data !== -1) {
-                    for (var i = 0, len = data.data.length; i < len; i++) {
-                        data.data[i].pageIndex = i + 1;
+                    dealfailureData = data.data;
+                    for (var i = 0; i < dealfailureData.length; i++) {
+                        dealfailureData[i].index = i + 1;
                     }
-                    total = data.total;
-                    ret = data.data;
                 }
-
-                $scope.gridOptions.totalItems = total;
-                $scope.gridOptions.data = ret;
+                $scope.gridOptions.data = dealfailureData;
             }).finally(function () {
                 $scope.loadingFlag = false;
             });
         }
-
+        /**
+         * 初始化数据
+         * @author Niuxinyi
+         * @date   2017-11-20
+         * @return {undefined}
+         */
         var initialize = function () {
             clearFeedback();
-            $scope.groupID = App.Temp.groupId;
+            // 初始化表格;
             $scope.gridOptions = {
                 useExternalSorting: true,
                 enableColumnMenus: false,
@@ -140,30 +140,28 @@ angular.module('app').controller('intersectLineListCtl', ['$window', '$scope', '
                 rowTemplate: formatRow(),
                 onRegisterApi: function (gridApi) {
                     $scope.gridApi = gridApi;
+                    gridApi.grid.registerRowsProcessor(myRowProc, 200);
                 },
                 columnDefs: [
-                    { field: 'worker', displayName: '序号', enableSorting: false, minWidth: 45, cellTemplate: getIndex() },
-                    { field: 'linkPid', displayName: '道路Id', enableSorting: false, minWidth: 70 },
-                    { field: 'geometryId', displayName: '几何Id', enableSorting: false, minWidth: 100 },
-                    { field: 'linkDir', displayName: '限制方向', enableSorting: false, minWidth: 75, cellTemplate: getBoundaryLike() }
+                    { field: 'index', displayName: '序号', enableSorting: false, minWidth: 50, cellTemplate: getIndex() },
+                    { field: 'geoLiveType', displayName: '类型', enableSorting: false, minWidth: 80, cellTemplate: getGeoLiveType() },
+                    { field: 'geometryId', displayName: '几何ID', enableSorting: false, minWidth: 150, cellTemplate: getGeometryId() }
+
                 ]
             };
             // 初始化表格;
-            setTimeout(function () {
+            $timeout(function () {
                 getData();
-                $scope.$apply();
-            });
+            }, 100);
         };
+        $scope.$on('ReloadData', initialize);
 
-        var unbindHandler = $scope.$on('ReloadData', initialize);
-
-        $scope.$on('refresh-intersectLine', function () {
+        $scope.$on('refresh-dealFailureList', function () {
             getData();
         });
         $scope.$on('$destroy', function () {
             clearFeedback();
             feedbackCtrl.del(feedback);
-            unbindHandler = null;
         });
     }
 ]);

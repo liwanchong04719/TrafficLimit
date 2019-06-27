@@ -1,7 +1,8 @@
 <div ng-controller="batchDeleteLimitCtrl">
     <div class="scroll_style" style="height: 200px">
         <div ng-repeat="item in limitData" style="padding-left: 10px;">
-            <span>{{item.properties.id}}</span>
+            <input type="checkbox" ng-checked="item.checked" ng-model="item.checked">
+            <span ng-click="location(item)">{{item.properties.id}}</span>
         </div>
     </div>
     <div>

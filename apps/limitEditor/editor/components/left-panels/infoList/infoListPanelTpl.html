@@ -157,9 +157,17 @@
                     <span class="left">情报编码：</span>
                     <span>{{infoCode}}</span>
                 </li>
-                <li class="multi-line">
-                    <span class="left">来源网址：</span>
-                    <a class="long-text" href="{{url}}" target="_blank">{{url}}</a>
+                <li class="multi-line" >
+                    <ul ng-repeat="item in url track by $index">
+                        <li class="multi-line" ng-if="$index == 0">
+                            <span class="left">来源网址：</span>
+                            <a class="long-text" href="{{item}}" target="_blank">{{item}}</a>
+                        </li>
+                        <li class="multi-line" ng-if="$index != 0">
+                            <span class="left"></span>
+                            <a class="long-text" href="{{item}}" target="_blank">{{item}}</a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
                     <span class="left">发布日期：</span>

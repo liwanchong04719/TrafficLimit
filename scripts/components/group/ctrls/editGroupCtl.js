@@ -108,6 +108,16 @@ angular.module('app').controller('editGroupCtrl', ['$window', '$scope', '$timeou
                     return;
                 }
                 var str = '限行时间:' + $scope.row[i].time + '|限行对象:' + $scope.row[i].target + '|限行范围:' + $scope.row[i].range + '|限行策略:' + $scope.row[i].strategy;
+                // 转换非法字符（自定义范围内）
+                var str1 = $scope.replaceIllegalChar(str);
+                // 非中文的字符全角转半角
+                str = $scope.ToCDB(str1);
+                // 校验字符串格式
+                if ($scope.matchResult(str)) {
+                    var result = str.match(/[^a-z0-9A-Z\u4e00-\u9fa5-;,:()\\|]/g);
+                    swal('提示', '存在非法字符 ' + result.toString(), 'warning');
+                    return;
+                }
                 if (i + 1 === $scope.row.length) {
                     principle += str;
                 } else {
@@ -155,7 +165,53 @@ angular.module('app').controller('editGroupCtrl', ['$window', '$scope', '$timeou
                 });
             }
         };
+        $scope.replaceIllegalChar = function (str) {
+            var regex1 = /[→—―\-\-]/g;
+            str = str.replace(regex1, '-');
+            var regex2 = /[“”"《》\s\t\n]/g;
+            str = str.replace(regex2, '');
+            var regex3 = /[、。；]/g;
+            str = str.replace(regex3, ';');
+            str = str.replace(/[<]/g, '小于');
+            str = str.replace(/[>]/g, '大于');
+            str = str.replace(/[︰]/g, ':');
+            str = str.replace(/[Ⅰ]/g, 'I');
+            str = str.replace(/[Ⅱ]/g, 'II');
+            str = str.replace(/[Ⅲ]/g, 'III');
+            str = str.replace(/[Ⅳ]/g, 'IV');
+            str = str.replace(/[Ⅴ]/g, 'V');
+            str = str.replace(/[〉]/g, ')');
+            str = str.replace(/[〈]/g, '(');
 
+            return str;
+        };
+        // 匹配字符
+        $scope.matchResult = function (str) {
+            var regex = /[^a-z0-9A-Z\u4e00-\u9fa5-;,:()\\|]/;
+            if (regex.test(str)) {
+                return true;
+            }
+            return false;
+        };
+        // 全角自动转成半角
+        $scope.ToCDB = function (str) { // 全角转半角
+            var tmp;
+            if (str) {
+                tmp = '';
+                for (var i = 0; i < str.length; i++) {
+                    if (str.charCodeAt(i) == 12288) {
+                        tmp += String.fromCharCode(32);
+                    } else if (str.charCodeAt(i) > 65248 && str.charCodeAt(i) < 65375) {
+                        tmp += String.fromCharCode(str.charCodeAt(i) - 65248);
+                    } else {
+                        tmp += str[i];
+                    }
+                }
+            } else {
+                tmp = str;
+            }
+            return tmp;
+        };
         var unbindHandler = $scope.$on('ReloadData-editGroup', initialize);
         $scope.$on('$destroy', function (event, data) {
 

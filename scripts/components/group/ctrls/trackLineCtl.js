@@ -7,6 +7,7 @@ angular.module('app').controller('trackLineCtrl', function ($scope, dsFcc, NgTab
     var symbolFactory = fastmap.mapApi.symbol.GetSymbolFactory();
     var symbol = symbolFactory.getSymbol('track_num');
     var feedbackCtrl = fastmap.mapApi.FeedbackController.getInstance();
+    var topoEditFactory = fastmap.uikit.topoEdit.TopoEditFactory.getInstance();
 
     var feedback = new fastmap.mapApi.Feedback();
     feedbackCtrl.add(feedback);
@@ -128,6 +129,20 @@ angular.module('app').controller('trackLineCtrl', function ($scope, dsFcc, NgTab
         $scope.$emit('LocateObject', { feature: {
             geometry: item.geometry
         } });  //  定位到第一个点的位置
+       // 查询全量数据并数据高亮
+        var topoEditor = topoEditFactory.createTopoEditor('TRACKLINE');
+        item.geoLiveType = 'RDLINK';
+        topoEditor.query(item)
+            .then(function (res) {
+                if (res) {
+                    $scope.$emit('trackLink-HighlightObject', res);
+                } else {
+                    throw new Error('未查询到任何信息');
+                }
+            })
+            .catch(function (errMsg) {
+                swal('提示', errMsg, 'error');
+            });
     };
     /**
      * 关闭搜索面板;

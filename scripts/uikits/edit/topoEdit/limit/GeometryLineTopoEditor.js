@@ -33,6 +33,97 @@ fastmap.uikit.topoEdit.GeometryLineTopoEditor = fastmap.uikit.topoEdit.TopoEdito
         editResult.geoLiveType = 'GEOMETRYLINE';
         return editResult;
     },
+    /**
+     * 创建工具需要使用的ModifyEditResult
+     * @param {object} options 包括选项
+     * @returns {object} editResult 编辑结果
+     */
+    getModifyEditResult: function (options) {
+        var originObject = options.originObject;
+        var editResult = new fastmap.uikit.shapeEdit.PathResult();
+        editResult.originObject = originObject;
+        editResult.geoLiveType = 'GEOMETRYLINE';
+        editResult.finalGeometry = FM.Util.clone(options.originObject.geometry);
+        editResult.snapActors = [
+            {
+                id: options.originObject.pid,
+                geoLiveType: 'RDNODE',
+                priority: 4,
+                enable: true,
+                exceptions: []
+            },
+            {
+                id: options.originObject.pid,
+                geoLiveType: 'COPYTOLINE',
+                priority: 2,
+                enable: true,
+                exceptions: []
+            },
+            {
+                id: options.originObject.pid,
+                geoLiveType: 'GEOMETRYLINE',
+                priority: 1,
+                enable: true,
+                exceptions: []
+            },
+            {
+                id: options.originObject.pid,
+                geoLiveType: 'GEOMETRYPOLYGON',
+                priority: 0,
+                enable: true,
+                exceptions: []
+            }
+        ];
+        return editResult;
+    },
+    /**
+     * 创建工具需要使用的BreakResult
+     * @param {object} options 包括选项
+     * @returns {object} editResult 编辑结果
+     */
+    getBreakResult: function (options) {
+        var editResult = new fastmap.uikit.complexEdit.BreakEditLineResult();
+        editResult.geoLiveType = 'GEOMETRYLINE';
+        editResult.id = options.originObject.pid;
+        editResult.snapActors = [
+            {
+                id: options.originObject.pid,
+                geoLiveType: 'GEOMETRYLINE'
+            }
+        ];
+        return editResult;
+    },
+    /**
+     * 更新
+     * @param {object} editResult 编辑结果
+     * @returns {object} params
+     */
+
+    update: function (editResult) {
+        var params = {
+            type: 'SCPLATERESGEOMETRY',
+            command: 'UPDATE',
+            objId: editResult.originObject.pid,
+            data: {
+                geometry: editResult.finalGeometry,
+                objStatus: 'UPDATE'
+            }
+        };
+        return this.dataServiceFcc.copyToLine(params);
+    },
+
+    break: function (editResult) {
+        var params = {
+            type: 'SCPLATERESGEOMETRY',
+            command: 'BREAK',
+            objId: editResult.id,
+            data: {
+                longitude: editResult.breakPoint.coordinates[0],
+                latitude: editResult.breakPoint.coordinates[1]
+            }
+        };
+        return this.dataServiceFcc.copyToLine(params);
+    },
 
     updateChanges: function (geoLiveObject) {
         var params = {

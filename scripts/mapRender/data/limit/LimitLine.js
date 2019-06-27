@@ -20,5 +20,6 @@ FM.mapApi.render.data.LimitLine = FM.mapApi.render.data.Limit.extend({
         this.properties.geoLiveType = 'LIMITLINE';
         this.properties.linkDir = data.m.b;
         this.properties.geometryId = data.m.c;
+        this.properties.groupId = data.m.d;
     }
 });

@@ -184,5 +184,25 @@ App.Config.map.FeatureLayers = {
             render: FM.mapApi.render.renderer.FeatureRender,
             minZoom: 17
         }
+    },
+    IxPoi: {
+        name: '兴趣点',
+        type: 'vector',
+        options: {
+            source: 'objSource',
+            featureType: 'IXPOI',
+            render: FM.mapApi.render.renderer.FeatureRender,
+            minZoom: 17
+        }
+    },
+    RdMileagePile: {
+        name: '里程桩',
+        type: 'vector',
+        options: {
+            source: 'objSource',
+            featureType: 'RDMILEAGEPILE',
+            render: FM.mapApi.render.renderer.FeatureRender,
+            minZoom: 17
+        }
     }
 };

@@ -26,17 +26,17 @@
                 <div class="infoList_rightDiv_choose">
                     <span>行政区划</span>
                     <select class="form-control poiRightPanel_select"
-                            ng-model="provinceName"
-                            ng-change="changeProvince(provinceName)"
+                            ng-model="regionObj.provinceName"
+                            ng-change="changeProvince(regionObj.provinceName)"
                             ng-options="value for value in provinceList"
                             style="display: inline-block;width: 200px"
                     >
                     </select>
                     <select class="form-control poiRightPanel_select"
-                            ng-model="cityId"
+                            ng-model="regionObj.cityId"
                             ng-disabled="isSpecialOperation"
-                            ng-options="value.id as value.name for value in cityList track by $index"
-                            ng-change="changeCityId(cityId)"
+                            ng-options="value.id as value.name for value in cityList"
+                            ng-change="changeCityId(regionObj.cityId)"
                             style="display: inline-block;width: 200px;margin-left: 10px"
                     >
                     </select>

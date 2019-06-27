@@ -3,20 +3,20 @@
         <!-- <div class="innerImg"></div> -->
     </div>
     <ul class="list-group fm-dropdown-menu">
-        <li ng-class="{true:'disabled'}[menuList.indexOf('infoPanel') < 0]" ng-click="backToInfo(menuList.indexOf('infoPanel') < 0)">
-            返回group
+        <li ng-class="{true:'disabled'}[menuList.indexOf('submit') < 0]" ng-click="submitGeometry(menuList.indexOf('submit') < 0)">
+            提交几何
+        </li>
+        <li ng-class="{true:'disabled'}[menuList.indexOf('log') < 0]" ng-click="submitAgain(menuList.indexOf('log') < 0)">
+            重新批赋
+        </li>
+        <li ng-class="{true:'disabled'}[menuList.indexOf('datadifference') < 0]" ng-click="showdatadifferenceResultListPanel(menuList.indexOf('datadifference') < 0)">
+            数据差分
         </li>
         <li ng-class="{true:'disabled'}[menuList.indexOf('policyTable') < 0]" ng-click="showPolicyTool(menuList.indexOf('policyTable') < 0)">
             编辑策略表
         </li>
-        <li ng-class="{true:'disabled'}[menuList.indexOf('submit') < 0]" ng-click="submitGeometry(menuList.indexOf('submit') < 0)">
-            提交几何
-        </li>
         <li ng-class="{true:'disabled'}[menuList.indexOf('limit') < 0]" ng-click="spareLineList(menuList.indexOf('limit') < 0)">
             编辑线列表
-        </li>
-        <li ng-class="{true:'disabled'}[menuList.indexOf('log') < 0]" ng-click="submitAgain(menuList.indexOf('log') < 0)">
-            重新批赋
         </li>
         <li ng-class="{true:'disabled'}[menuList.indexOf('intersectList') < 0]" ng-click="intersectList(menuList.indexOf('intersectList') < 0)">
             相交线列表
@@ -25,7 +25,13 @@
             几何成果列表
         </li>
         <li ng-class="{true:'disabled'}[menuList.indexOf('temporaryList') < 0]" ng-click="showTemporaryResultListPanel(menuList.indexOf('temporaryList') < 0)">
-            临时几何列表
+            几何临时列表
+        </li>
+        <li ng-class="{true:'disabled'}[menuList.indexOf('dealfailureList') < 0]" ng-click="showdealfailureResultListPanel(menuList.indexOf('dealfailureList') < 0)">
+            处理失败列表
+        </li>
+        <li ng-class="{true:'disabled'}[menuList.indexOf('infoPanel') < 0]" ng-click="backToInfo(menuList.indexOf('infoPanel') < 0)">
+            返回group表
         </li>
         <li>
             <a href="#/login">退出</a>

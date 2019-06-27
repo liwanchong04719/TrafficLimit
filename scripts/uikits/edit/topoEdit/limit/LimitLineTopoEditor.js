@@ -90,7 +90,8 @@ fastmap.uikit.topoEdit.LimitLineTopoEditor = fastmap.uikit.topoEdit.TopoEditor.e
             geoLiveType: options.geoLiveType,
             geometry: options.geometry,
             linkDir: options.linkDir,
-            geometryId: options.geometryId
+            geometryId: options.geometryId,
+            groupId: options.groupId
         };
     }
 });

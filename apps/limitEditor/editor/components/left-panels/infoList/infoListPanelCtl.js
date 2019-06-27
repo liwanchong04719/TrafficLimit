@@ -77,7 +77,7 @@ angular.module('app').controller('infoListPanelCtl', ['$window', '$scope', '$tim
                         if (res1 !== -1) {
                             var item1 = res1.data[0]; //  主键查询，查询成功只会有一条数据
                             $scope.infoCode = item1.infoCode;
-                            $scope.url = item1.url;
+                            $scope.url = item1.url.split(';');
                             $scope.newsTime = item1.newsTime;
                             $scope.publicTime = item1.publicTime;
                             $scope.infoContent = item1.infoContent;

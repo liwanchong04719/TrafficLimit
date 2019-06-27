@@ -33,8 +33,8 @@ angular.module('app').controller('RoadRightEditPanelCtrl', ['$scope', '$rootScop
                     });
                 }
 
-                $scope.editable = $rootScope.Editable && topoEditor.canEdit($rootScope.CurrentObject);
-                $scope.deletable = topoEditor.canDelete($rootScope.CurrentObject);
+                $scope.editable = $rootScope.Editable && topoEditor.canEdit($rootScope.CurrentObject) && App.Temp.groupId == $rootScope.CurrentObject.groupId;
+                $scope.deletable = topoEditor.canDelete($rootScope.CurrentObject) && App.Temp.groupId == $rootScope.CurrentObject.groupId;
                 // 道路要素不可删除时，依然可以编辑
                 $scope.fmFormEditable = $scope.editable;
                 eventCtrl.fire('deleteRoadToToolPanel', {
@@ -65,6 +65,7 @@ angular.module('app').controller('RoadRightEditPanelCtrl', ['$scope', '$rootScop
                     geoLiveType: objectEditCtrl.data.geoLiveType,
                     linkDir: objectEditCtrl.data.linkDir,
                     geometryId: objectEditCtrl.data.geometryId,
+                    groupId: objectEditCtrl.data.groupId,
                     geometry: objectEditCtrl.data.geometry
                 });
             } else {
@@ -72,6 +73,7 @@ angular.module('app').controller('RoadRightEditPanelCtrl', ['$scope', '$rootScop
                     pid: objectEditCtrl.data.pid,
                     geoLiveType: objectEditCtrl.data.geoLiveType,
                     boundaryLink: objectEditCtrl.data.boundaryLink,
+                    groupId: objectEditCtrl.data.groupId,
                     geometry: objectEditCtrl.data.geometry
                 });
             }

@@ -11,6 +11,7 @@ FM.mapApi.render.renderer.GeometryLine = FM.mapApi.render.Renderer.extend({
 
         // 绑定函数作用域
         FM.Util.bind(this);
+        this._symbol = null;
     },
     /**
      * 渲染几何
@@ -20,18 +21,38 @@ FM.mapApi.render.renderer.GeometryLine = FM.mapApi.render.Renderer.extend({
      * @return {object} symbol 几何
      */
     getSymbol: function () {
+        var compositeSymbol = this._symbolFactory.createSymbol({ type: 'CompositeLineSymbol' });
+        compositeSymbol.geometry = this._geometryFactory.fromGeojson(this._feature.geometry);
+        this._symbol = compositeSymbol;
+        this._addBasicSymbol();
+        if (this._feature.properties.groupId === App.Temp.groupId) {
+            this._addMarkerSymbol();
+        }
+        return this._symbol;
+    },
+    _addBasicSymbol: function () {
         var symbolData = {
             type: 'SimpleLineSymbol',
             color: 'pink',
             width: 3
         };
-        if (this._feature.properties.boundaryLink === '2') {
-            symbolData.type = 'CartoLineSymbol';
-            symbolData.pattern = [10, 10];
-        }
         var symbol = this._symbolFactory.createSymbol(symbolData);
-        symbol.geometry = this._geometryFactory.fromGeojson(this._feature.geometry);
-        return symbol;
+        this._symbol.symbols.push(symbol);
+    },
+    _addMarkerSymbol: function () {
+        var symbolData = {
+            type: 'MarkerLineSymbol',
+            marker: {
+                type: 'TiltedCrossMarkerSymbol',
+                size: 6,
+                color: 'pink',
+                width: 1,
+                opacity: 1
+            },
+            pattern: [10, 10]
+        };
+        var symbol = this._symbolFactory.createSymbol(symbolData);
+        this._symbol.symbols.push(symbol);
     },
     /**
      * 高亮几何

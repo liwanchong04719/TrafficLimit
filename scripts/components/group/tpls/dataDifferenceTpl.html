@@ -1,0 +1,13 @@
+<div ng-controller="dataDifferenceCtrl">
+    <div class="scroll_style" style="height: 200px">
+        <div ui-grid="gridOptions"
+             ui-grid-selection
+             class="fm-grid wmContent" style="height: 100%;">
+
+            <!--loading效果-->
+            <div ng-show="loadingFlag" class="tableLoading" ng-include="'./svgLoading.html'"></div>
+        </div>
+    </div>
+    <div>
+    </div>
+</div>

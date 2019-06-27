@@ -102,12 +102,16 @@ fastmap.uikit.complexEdit.BatchEditLimitTool = fastmap.uikit.complexEdit.Complex
         var polygonSymbol = this.symbolFactory.getSymbol('py_face');
         for (var i = 0; i < links.length; ++i) {
             var link = links[i];
-            var linkGeometry = null;
-            linkGeometry = link.geometry;
-            if (linkGeometry.type === 'Polygon') {
-                this.stepFeedback2.add(linkGeometry, polygonSymbol);
+            if (link.properties.groupId == App.Temp.groupId) {
+                var linkGeometry = null;
+                linkGeometry = link.geometry;
+                if (linkGeometry.type === 'Polygon') {
+                    this.stepFeedback2.add(linkGeometry, polygonSymbol);
+                } else {
+                    this.stepFeedback2.add(linkGeometry, lineSymbol);
+                }
             } else {
-                this.stepFeedback2.add(linkGeometry, lineSymbol);
+                links.splice(i);
             }
         }
     },
